@@ -29,6 +29,7 @@ class TestDBStorageDocs(unittest.TestCase):
     def setUpClass(cls):
         """Set up for the doc tests"""
         cls.dbs_f = inspect.getmembers(DBStorage, inspect.isfunction)
+        cls.storage = DBStorage()
 
     def test_pep8_conformance_db_storage(self):
         """Test that models/engine/db_storage.py conforms to PEP8."""
@@ -66,6 +67,24 @@ test_db_storage.py'])
                              "{:s} method needs a docstring".format(func[0]))
             self.assertTrue(len(func[1].__doc__) >= 1,
                             "{:s} method needs a docstring".format(func[0]))
+
+    def test_db_storage_get(self):
+        """Test get method, return object"""
+        dummy_state = State(name="Dummy State")
+        dummy_state_id = "State.{}".format(dummy_state.id)
+        self.storage.reload()
+        self.storage.new(dummy_state)
+        self.storage.save()
+        self.assertEqual(dummy_state.id, self.storage.get(
+            cls=State, id=dummy_state_id).id)
+
+    def test_db_storage_count(self):
+        """Test count method"""
+        self.assertEqual(self.storage.count(State), 0)
+        dummy_state = State(name="Dummy State")
+        self.storage.new(dummy_state)
+        self.storage.save()
+        self.assertEqual(self.storage.count(State), 1)
 
 
 class TestFileStorage(unittest.TestCase):

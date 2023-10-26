@@ -71,6 +71,11 @@ test_file_storage.py'])
 class TestFileStorage(unittest.TestCase):
     """Test the FileStorage class"""
     @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    @classmethod
+    def setUpClass(cls):
+        """Set up for the tests"""
+        cls.storage = FileStorage()
+
     def test_all_returns_dict(self):
         """Test that all returns the FileStorage.__objects attr"""
         storage = FileStorage()
@@ -113,3 +118,13 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+
+    def test_file_storage_get(self):
+        """Test get method, return object"""
+        dummy_state = State(name="Dummy State")
+        dummy_state_id = "State.{}".format(dummy_state.id)
+        self.storage.reload()
+        self.storage.new(dummy_state)
+        self.storage.save()
+        self.assertEqual(dummy_state.id, self.storage.get(
+            cls=State, id=dummy_state_id).id)
