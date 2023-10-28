@@ -1,6 +1,8 @@
-#!/bin/usr/python3
-
-"""create a variable app, instance of Flask"""
+#!/usr/bin/python3
+"""
+This module create a variable app, instance of Flask and run at
+HBNB_API_HOST and HBNB_API_PORT
+"""
 
 
 from flask import Flask
