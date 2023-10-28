@@ -30,5 +30,6 @@ def api_stats():
     # for klass in classes:
     #     objects_count[klass.__qualname__] = storage.count(klass)
     # return objects_count
-    return {klass.__qualname__.lower():
-            storage.count(klass) for klass in classes}
+    return jsonify({
+        klass.__qualname__.lower(): storage.count(klass) for klass in classes
+    })
