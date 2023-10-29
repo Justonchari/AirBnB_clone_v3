@@ -19,17 +19,12 @@ def api_status():
 @app_views.route("/stats", methods=["GET"])
 def api_stats():
     """Get api object stats"""
-    from models.amenity import Amenity
-    from models.city import City
-    from models.place import Place
-    from models.review import Review
-    from models.state import State
-    from models.user import User
 
-    classes = [Amenity, City, Place, Review, State, User]
+    classes = {"Amenity": "amenities", "City": "cities", "Place": "places",
+               "Review": "reviews", "State": "states", "User": "users"}
     # for klass in classes:
     #     objects_count[klass.__qualname__] = storage.count(klass)
     # return objects_count
     return jsonify({
-        klass.__qualname__.lower(): storage.count(klass) for klass in classes
+        classes[klass]: storage.count(klass) for klass in classes
     })
