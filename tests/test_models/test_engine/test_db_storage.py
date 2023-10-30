@@ -91,33 +91,19 @@ test_db_storage.py"
                 "{:s} method needs a docstring".format(func[0]),
             )
 
-    def test_db_storage_get(self):
-        """Test get method, return object"""
-        dummy_state = State(name="Dummy State")
-        dummy_state_id = "State.{}".format(dummy_state.id)
-        self.storage.reload()
-        self.storage.new(dummy_state)
-        self.storage.save()
-        self.assertEqual(
-            dummy_state.id, self.storage.get(cls=State, id=dummy_state_id).id
-        )
-
-    def test_db_storage_count(self):
-        """Test count method"""
-        self.assertEqual(self.storage.count(State), 0)
-        dummy_state = State(name="Dummy State")
-        self.storage.new(dummy_state)
-        self.storage.save()
-        self.assertEqual(self.storage.count(State), 1)
-
 
 class TestFileStorage(unittest.TestCase):
     """Test the FileStorage class"""
+    @classmethod
+    def setUpClass(cls):
+        """Set up for the doc tests"""
+        cls.storage = DBStorage()
 
     @unittest.skipIf(models.storage_t != "db", "not testing db storage")
     def test_all_returns_dict(self):
         """Test that all returns a dictionaty"""
-        self.assertIs(type(models.storage.all()), dict)
+        self.storage.reload()
+        self.assertIs(type(self.storage.all()), dict)
 
     @unittest.skipIf(models.storage_t != "db", "not testing db storage")
     def test_all_no_class(self):
@@ -130,3 +116,25 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != "db", "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+
+    @unittest.skipIf(models.storage_t != "db", "not testing db storage")
+    def test_db_storage_get(self):
+        """Test get method, return object"""
+        dummy_state = State(name="Dummy State")
+        self.storage.new(dummy_state)
+        self.storage.save()
+        self.storage.reload()
+        self.storage.save()
+        self.assertEqual(
+            dummy_state.id, self.storage.get(cls=State, id=dummy_state.id).id
+        )
+
+    @unittest.skipIf(models.storage_t != "db", "not testing db storage")
+    def test_db_storage_count(self):
+        """Test count method"""
+        self.storage.reload()
+        self.assertEqual(self.storage.count(State), 0)
+        dummy_state = State(name="Dummy State")
+        self.storage.new(dummy_state)
+        self.storage.save()
+        self.assertEqual(self.storage.count(State), 1)
