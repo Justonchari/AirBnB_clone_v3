@@ -24,7 +24,12 @@ def get_city_places(city_id):
         data = request.get_json()
         if not data:
             return jsonify({"error": "Not a json"}), 400
-        if not data.get("name", None):
+        user_id = data.get("user_id", None)
+        if not user_id:
+            return jsonify({"error": "Missing user_id"}), 400
+        elif not storage.get(cls="User", id=user_id):
+            abort(404)
+        elif not data.get("name", None):
             return jsonify({"error": "Missing name"}), 400
         new_place = Place(**data)
         new_place.save()
@@ -32,7 +37,8 @@ def get_city_places(city_id):
 
 
 @app_views.route(
-    "/places/<place_id>", methods=["GET", "DELETE", "PUT"], strict_slashes=False
+    "/places/<place_id>", methods=["GET", "DELETE", "PUT"],
+    strict_slashes=False
 )
 def get_place(place_id):
     """Get/Delete/Update place by id"""
