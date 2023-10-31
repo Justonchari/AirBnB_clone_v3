@@ -26,7 +26,7 @@ def get_state_cities(state_id):
             return jsonify({"error": "Not a json"}), 400
         if not data.get("name", None):
             return jsonify({"error": "Missing name"}), 400
-        new_city = City(**data)
+        new_city = City(state_id=state_id, **data)
         new_city.save()
         return jsonify(new_city.to_dict()), 201
 

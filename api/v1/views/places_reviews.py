@@ -33,7 +33,7 @@ def get_reviews(place_id):
             return jsonify({"error": "Missing name"}), 400
         elif not data.get("text", None):
             return jsonify({"error": "Missing text"}), 400
-        new_review = Review(**data)
+        new_review = Review(place_id=place_id, user_id=user_id, **data)
         new_review.save()
         return jsonify(new_review.to_dict()), 201
 

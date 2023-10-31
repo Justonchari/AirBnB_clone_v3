@@ -31,7 +31,7 @@ def get_city_places(city_id):
             abort(404)
         elif not data.get("name", None):
             return jsonify({"error": "Missing name"}), 400
-        new_place = Place(**data)
+        new_place = Place(city_id=city_id, **data)
         new_place.save()
         return jsonify(new_place.to_dict()), 201
 
