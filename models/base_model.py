@@ -55,10 +55,11 @@ class BaseModel:
     def save(self):
         """updates the attribute 'updated_at' with the current datetime"""
         self.updated_at = datetime.now()
+        print(self.__dict__)
         models.storage.new(self)
         models.storage.save()
 
-    def to_dict(self):
+    def to_dict(self, fs_write=False):
         """returns a dictionary containing all keys/values of the instance"""
         new_dict = self.__dict__.copy()
         if "created_at" in new_dict:
@@ -68,6 +69,9 @@ class BaseModel:
         new_dict["__class__"] = self.__class__.__name__
         if "_sa_instance_state" in new_dict:
             del new_dict["_sa_instance_state"]
+        if not fs_write:
+            if "password" in new_dict:
+                del new_dict["password"]
         return new_dict
 
     def delete(self):
